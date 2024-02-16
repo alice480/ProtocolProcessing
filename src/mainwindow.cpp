@@ -1,18 +1,26 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+void MainWindow::output_statistic() {
+  std::string temp(50, '-');
+  QString delmiter = QString::fromStdString(temp);
+  for (const auto &[name, count] : hardware_counts) {
+    ui->textEdit->append(delmiter);
+    ui->textEdit->append("Имя пользователя: " + QString::fromStdString(name));
+    ui->textEdit->append("Количество включений: " + QString::number(count));
+
+    QTime time = QTime::fromMSecsSinceStartOfDay(hardware_times[name]);
+    ui->textEdit->append("Суммарное время работы: " +
+                         time.toString("hh:mm:ss"));
+  }
+  ui->lineEdit->setText(QString::number(count_of_inclusions));
+}
+
 // processing protocol data
 void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
   // getting dates for analysis fro, dateEdit widgets
   QDate date1 = ui->dateEdit->date();
   QDate date2 = ui->dateEdit_2->date();
-
-  // number of hardware launches
-  short count_of_inclusions = 0;
-
-  // lists of users and their statistics
-  std::map<std::string, short> hardware_counts{};
-  std::map<std::string, int> hardware_times{};
 
   // going through the records of the protocol
   for (std::string line : protocol_data) {
@@ -46,16 +54,6 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
       }
     }
   }
-
-  for (const auto &[name, count] : hardware_counts) {
-    ui->textEdit->append(QString::fromStdString(name));
-    ui->textEdit->append(QString::number(count));
-
-    QTime time = QTime::fromMSecsSinceStartOfDay(hardware_times[name]);
-    ui->textEdit->append(time.toString("hh:mm:ss"));
-  }
-
-  ui->lineEdit->setText(QString::number(count_of_inclusions));
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -76,4 +74,5 @@ void MainWindow::on_pushButton_clicked() {
 
   std::vector<std::string> protocol_data = read_protocol_file(fileName);
   process_protocol(protocol_data);
+  output_statistic();
 }
