@@ -47,9 +47,6 @@ else()
     endif()
 endif()
 
-# Добавление подпроекта, указывается имя директории
-# add_subdirectory(backend)
-
 # Core Private
 target_link_libraries(${PROJECT_NAME}
     PRIVATE Qt6::Widgets

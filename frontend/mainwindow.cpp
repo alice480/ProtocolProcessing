@@ -29,7 +29,7 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
 
   // list of users and their statistics
   std::map<std::string, short> hardware_counts {};
-  std::map<std::string, const qint64> hardware_times {};
+  std::map<std::string, const QDateTime> hardware_times {};
 
   for (std::string line : protocol_data) {
 
@@ -56,18 +56,16 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
 
         const QDateTime start_datetime_of_work = get_datetime_from_line(line, "Начало работы :");
         const QDateTime end_datetime_of_work = get_datetime_from_line(line, "Работа завершена: ");
-        const qint64 work_duration = end_datetime_of_work.msecsTo(start_datetime_of_work);
-
-        // hardware_times[orerator_name] += work_duration;
-
-        
-        for (const auto& [name, count] : hardware_counts) {
-          ui->textEdit->append(QString::fromStdString(name));
-          ui->textEdit->append(QString::number(count));
-          // ui->textEdit->append(QString::number(hardware_times[orerator_name]));
-        }
+       
+        hardware_times[orerator_name].addMSecs(start_datetime_of_work.msecsTo(end_datetime_of_work));
       }
     }
+  }
+  
+  for (const auto& [name, count] : hardware_counts) {
+    ui->textEdit->append(QString::fromStdString(name));
+    ui->textEdit->append(QString::number(count));
+    ui->textEdit->append(hardware_times[name].toString());
   }
 
   ui->lineEdit->setText(QString::number(count_of_inclusions));
@@ -99,15 +97,14 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow() { delete ui; }
 
 void MainWindow::on_pushButton_clicked() {
+
   std::string fileName =
       QFileDialog::getOpenFileName(this, tr("Open protocol file"), "/home/",
                                    tr("Protocol files (*.log)"))
           .toStdString();
 
+  ui->textEdit->clear();
+  
   std::vector<std::string> protocol_data = read_protocol_file(fileName);
-
-  // number of hardware launches
-  ui->lineEdit->setText(QString::number(protocol_data.size()));
-
   process_protocol(protocol_data);
 }
