@@ -1,11 +1,10 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef _SRC_MAINWINDOW_H
+#define _SRC_MAINWINDOW_H
 
-#include <QDateTimeEdit>
+#include "auxiliary.h"
 #include <QFileDialog>
 #include <QMainWindow>
-#include <fstream>
-#include <map>
+
 // #include "backend/processing.h"
 
 QT_BEGIN_NAMESPACE
@@ -21,7 +20,6 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
   void process_protocol(std::vector<std::string> protocol_data);
-  bool check_key_not_in_map(std::map<std::string, short> &m, const std::string m_key);
 
 private slots:
   void on_pushButton_clicked();
@@ -29,4 +27,5 @@ private slots:
 private:
   Ui::MainWindow *ui;
 };
-#endif // MAINWINDOW_H
+
+#endif // _SRC_MAINWINDOW_H

@@ -3,9 +3,16 @@ PREFIX := -DCMAKE_PREFIX_PATH=~/Qt/6.5.1/gcc_64
 
 all: start
 
+start: install
+	cd install && ./ProtocolProcessing
+
 install: to_build
 	if [ ! -d "install" ]; then mkdir install; fi;
 	cp build/ProtocolProcessing install/ProtocolProcessing
+
+to_build:
+	if [ ! -d "build" ]; then mkdir build; fi;
+	cd build && cmake $(PREFIX) ../ && make
 
 uninstall:
 	if [ -d "install" ]; then rm -rf install; fi;
@@ -23,12 +30,5 @@ dist: to_build
 test:
 	cd backend && make
 
-to_build:
-	if [ ! -d "build" ]; then mkdir build; fi;
-	cd build && cmake $(PREFIX) ../ && make
-
-start: install
-	cd install && ./ProtocolProcessing
-
 formating:
-	clang-format -i frontend/*.cpp frontend/*.h
+	clang-format -i src/*.cpp src/*.h

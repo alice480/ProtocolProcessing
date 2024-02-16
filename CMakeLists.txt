@@ -15,14 +15,16 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt6 COMPONENTS Widgets Core REQUIRED)
 
 set(PROJECT_SOURCES
-        frontend/main.cpp
-        frontend/mainwindow.cpp
-        frontend/mainwindow.h
-        frontend/mainwindow.ui
+        src/main.cpp
+        src/mainwindow.cpp
+        src/mainwindow.h
+        src/mainwindow.ui
+        src/auxiliary.h
+        src/auxiliary.cpp
 )
 
 # Расположение заголовочных файлов
-include_directories(frontend)
+include_directories(src)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(${PROJECT_NAME}
