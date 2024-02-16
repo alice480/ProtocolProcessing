@@ -8,6 +8,16 @@ QDate get_date_from_line(std::string line, const std::string substring) {
   return QDate::fromString(date_of_work_str, "dd.MM.yy").addYears(100);
 }
 
+QDateTime get_datetime_from_line(std::string line, const std::string substring) {
+  size_t start_pos_of_datetime = line.find(substring) + substring.length();
+  size_t end_pos_of_datetime = line.find("\n", start_pos_of_datetime);
+  size_t length_of_datetime = end_pos_of_datetime - start_pos_of_datetime - 1;
+
+  const QString datetime_str = QString::fromStdString(line.substr(start_pos_of_datetime, length_of_datetime));
+
+  return QDateTime::fromString(datetime_str, "dd.MM.yy hh:mm:ss");
+}
+
 
 void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
   // getting dates for analysis
@@ -18,8 +28,8 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
   short count_of_inclusions = 0;
 
   // list of users and their statistics
-  std::map<std::string, short> hardware_users {};
-  // std::vector<std::string> hardware_users {};
+  std::map<std::string, short> hardware_counts {};
+  std::map<std::string, const qint64> hardware_times {};
 
   for (std::string line : protocol_data) {
 
@@ -42,11 +52,19 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
             line.substr(start_pos_of_name, length_of_name);
 
         // increasing the number of inclusions on behalf of the user
-        ++hardware_users[orerator_name];
+        ++hardware_counts[orerator_name];
+
+        const QDateTime start_datetime_of_work = get_datetime_from_line(line, "Начало работы :");
+        const QDateTime end_datetime_of_work = get_datetime_from_line(line, "Работа завершена: ");
+        const qint64 work_duration = end_datetime_of_work.msecsTo(start_datetime_of_work);
+
+        // hardware_times[orerator_name] += work_duration;
+
         
-        for (const auto& [name, count] : hardware_users) {
+        for (const auto& [name, count] : hardware_counts) {
           ui->textEdit->append(QString::fromStdString(name));
           ui->textEdit->append(QString::number(count));
+          // ui->textEdit->append(QString::number(hardware_times[orerator_name]));
         }
       }
     }
