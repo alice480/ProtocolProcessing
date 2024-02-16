@@ -21,6 +21,7 @@ public:
   MainWindow(QWidget *parent = nullptr);
   ~MainWindow();
   void process_protocol(std::vector<std::string> protocol_data);
+  bool check_key_not_in_map(std::map<std::string, short> &m, const std::string m_key);
 
 private slots:
   void on_pushButton_clicked();

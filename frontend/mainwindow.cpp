@@ -2,13 +2,6 @@
 #include "./ui_mainwindow.h"
 
 
-bool check_string_key_in_map(std::map<std::string, short> m, const std::string m_key) {
-  int result = 1;
-  for (auto const& x : m)
-    result *= x.first.compare(m_key);
-  return result == 0;
-}
-
 QDate get_date_from_line(std::string line, const std::string substring) {
   const QString date_of_work_str = QString::fromStdString(
         line.substr(line.find(substring) + substring.length(), 8));
@@ -24,19 +17,21 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
   // number of hardware launches
   short count_of_inclusions = 0;
 
+  // list of users and their statistics
+  std::map<std::string, short> hardware_users {};
+  // std::vector<std::string> hardware_users {};
+
   for (std::string line : protocol_data) {
 
     // get the start date of the work
     QDate start_date_of_work = get_date_from_line(line, "Начало работы :");
     // get the end date of the work
     QDate end_date_of_work = get_date_from_line(line, "Работа завершена: ");
-
-    // list of users and their statistics
-    std::map<std::string, short> hardware_users;
-
+  
     if (date1 <= start_date_of_work && end_date_of_work <= date2) {
       count_of_inclusions++;
       if (line.find("Оператор") != std::string::npos) {
+        // operators name extraction
         const std::string operator_substring = "Оператор -  ";
         size_t start_pos_of_name =
             line.find(operator_substring) + operator_substring.length();
@@ -45,6 +40,14 @@ void MainWindow::process_protocol(std::vector<std::string> protocol_data) {
 
         std::string orerator_name =
             line.substr(start_pos_of_name, length_of_name);
+
+        // increasing the number of inclusions on behalf of the user
+        ++hardware_users[orerator_name];
+        
+        for (const auto& [name, count] : hardware_users) {
+          ui->textEdit->append(QString::fromStdString(name));
+          ui->textEdit->append(QString::number(count));
+        }
       }
     }
   }
