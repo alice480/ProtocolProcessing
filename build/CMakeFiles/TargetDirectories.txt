@@ -1,0 +1,4 @@
+/home/alice/ProtocolProcessing/ProtocolProcessing/build/CMakeFiles/ProtocolProcessing.dir
+/home/alice/ProtocolProcessing/ProtocolProcessing/build/CMakeFiles/edit_cache.dir
+/home/alice/ProtocolProcessing/ProtocolProcessing/build/CMakeFiles/rebuild_cache.dir
+/home/alice/ProtocolProcessing/ProtocolProcessing/build/CMakeFiles/ProtocolProcessing_autogen.dir

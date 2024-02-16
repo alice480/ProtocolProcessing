@@ -1,5 +1,5 @@
 PREFIX := -DCMAKE_PREFIX_PATH=~/Qt/6.5.1/gcc_64
-.PHONY := all, install, uninstall, clean, dvi, dist, test, gcov_report
+.PHONY := all, install, uninstall, clean, dist, test
 
 all: start
 
@@ -15,9 +15,6 @@ clean: uninstall
 	if [ -d "dist" ]; then rm -rf dist; fi;
 	cd backend && make clean
 
-dvi:
-	cd backend && make dvi
-
 dist: to_build
 	if [ ! -d "dist/ProtocolProcessing" ]; then mkdir -p dist/ProtocolProcessing; fi;
 	cp build/ProtocolProcessing dist/ProtocolProcessing/ProtocolProcessing
@@ -25,9 +22,6 @@ dist: to_build
 
 test:
 	cd backend && make
-
-gcov_report:
-	cd backend && make gcov_report open_gcov
 
 to_build:
 	if [ ! -d "build" ]; then mkdir build; fi;
