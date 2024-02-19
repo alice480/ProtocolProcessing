@@ -20,15 +20,11 @@ uninstall:
 clean: uninstall
 	if [ -d "build" ]; then rm -rf build; fi;
 	if [ -d "dist" ]; then rm -rf dist; fi;
-	cd backend && make clean
 
 dist: to_build
 	if [ ! -d "dist/ProtocolProcessing" ]; then mkdir -p dist/ProtocolProcessing; fi;
 	cp build/ProtocolProcessing dist/ProtocolProcessing/ProtocolProcessing
 	cd dist && tar -czvf ProtocolProcessing.tar.gz ProtocolProcessing && rm -rf ProtocolProcessing
-
-test:
-	cd backend && make
 
 formating:
 	clang-format -i src/*.cpp src/*.h
